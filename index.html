@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-        <title> Digital Confession</title>
+        <title> Random Letter</title>
         <meta property="og:title" content=" A little message for you">
         <meta property="og:description" content="Enter the code to unlock something special.">
         <meta property="og:type" content="website">
@@ -673,12 +673,11 @@
                     display: none;
                 }
             }
-
-            .songs-in .song-card { animation: FadeInRight .5s ease-out both; }
-            .songs-in .song-card:nth-child(2) { animation-delay: .08s; }
-            .songs-in .song-card:nth-child(3) { animation-delay: .16s; }
-            .songs-in .song-card:nth-child(4) { animation-delay: .24s; }
-            .songs-in .song-card:nth-child(5) { animation-delay: .32s; }
+        
+            .song-card.song-in { animation: FadeInRight .5s ease-out calc(var(--i) * 70ms) both; }
+            .song-details { min-width: 0; overflow-wrap: anywhere; }
+            .play-btn { white-space: nowrap; flex-shrink: 0; }
+            .page-content::after { content: ""; display: block; height: 76px; }
         </style>
     </head>
     <body>
@@ -688,7 +687,7 @@
                 <div class="passcode-header">
                     <div class="emoji-icon">💌🔐</div>
                     <h2>Enter 4-Digit Code to Unlock</h2>
-                    <p style="font-size:0.75rem; margin-top:4px;">Please enter 1111 to proceed</p>
+                    <p style="font-size:0.75rem; margin-top:4px;">Please enter "1111" to proceed.</p>
                 </div>
                 <div class="code-display">
                     <input type="text" id="codeInput" class="code-digits" readonly placeholder="____">
@@ -755,14 +754,14 @@
                     <button class="nav-btn-vertical" data-section="music">
                         <div class="nav-icon-large">🎵</div>
                         <div class="nav-text-group">
-                            <div class="nav-label-large">Favorite Music</div>
+                            <div class="nav-label-large">Playlist</div>
                             <div class="nav-role-large">Songs</div>
                         </div>
                         <div class="nav-arrow">→</div>
                     </button>
                 </div>
                 <div class="simple-footer">
-                    ❤️
+                    basta may quote dito. ❤️
                 </div>
             </div>
         </div>
@@ -778,27 +777,8 @@
                     <div class="direct-letter">
                         <div class="letter-content">
                             <h4>To my dearest, _____</h4>
-                            <p>MAMAAAAA!!<br>
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <br>
+                            <p>
+                                MAMAAAAA!!<br>
                             </p>
                             <div class="signature">
                                 <strong>- Rene Butter coconut</strong>
@@ -850,7 +830,7 @@
         const miniPlayer = document.getElementById("miniPlayer");
         const mpPlay = document.getElementById("mpPlay"), mpMute = document.getElementById("mpMute");
         const mpTitle = document.getElementById("mpTitle"), mpBar = document.getElementById("mpBar");
-        let letterSplit = false;
+        let letterSplit = false, animateSongs = false;
         const messagePage = document.getElementById("messagePage");
         const musicPage = document.getElementById("musicPage");
 
@@ -876,7 +856,6 @@
         }
 
         document.getElementById("continueWithAudio").addEventListener("click", () => {
-            // Must run inside the click handler so the browser allows playback
             playSong(bgIndex());
             revealDashboard();
         });
@@ -964,11 +943,15 @@
         }
 
         const playlist = [
-            { title: "Captivated", artist: "IV OF SPADES", emoji: "🎤", src: "IV OF SPADES - Captivated.mp3" },
-            { title: "Dear", artist: "Ben&Ben", emoji: "🎤", src: "Ben&Ben - Dear.mp3" },
-            { title: "Aphrodite", artist: "The Ridleys", emoji: "🎤", src: "The Ridleys - Aphrodite.mp3" },
-            { title: "All I Need To Hear", artist: "The 1975", emoji: "🎤", src: "The 1975 - All I Need To Hear.mp3" },
-            { title: "Bakit Labis Kitang Mahal", artist: "The Boyfriends", emoji: "🎤", src: "The Boyfriends - Bakit Labis Kitang Mahal.mp3" }
+            { title: "All I Need To Hear", artist: "The 1975", emoji: "🎤", src: "Musics/The 1975 - All I Need To Hear.mp3" },
+            { title: "The Robbers", artist: "The 1975", emoji: "🎤", src: "Musics/The 1975 - The Robbers.mp3" },
+            { title: "Fallingforyou", artist: "The 1975", emoji: "🎤", src: "Musics/The 1975 - Fallingforyou.mp3" },
+            { title: "About You", artist: "The 1975", emoji: "🎤", src: "Musics/The 1975 - About You.mp3" },
+            { title: "cherry flavored love inside your heart", artist: "wave to earth", emoji: "🎤", src: "Musics/wave to earth - cherry flavored love inside your heart.mp3" },
+            { title: "Captivated", artist: "IV OF SPADES", emoji: "🎤", src: "Musics/IV OF SPADES - Captivated.mp3" },
+            { title: "Dear", artist: "Ben&Ben", emoji: "🎤", src: "Musics/Ben&Ben - Dear.mp3" },
+            { title: "Aphrodite", artist: "The Ridleys", emoji: "🎤", src: "Musics/The Ridleys - Aphrodite.mp3" },
+            { title: "Garden", artist: "The Ridleys", emoji: "🎤", src: "Musics/The Ridleys - Garden.mp3" },
         ];
 
         const BG_TITLE = "All I Need To Hear";
@@ -1030,10 +1013,10 @@
         function renderMusicPageContent() {
             const container = document.getElementById("musicPageContent");
             if (!container) return;
-            let h = `<div class="music-section"><h3>🎶 Songs that reminds me of you 🎶</h3><div class="song-list">`;
+            let h = `<div class="music-section"><h3>🎶 Playlist 🎶</h3><div class="song-list">`;
             playlist.forEach((song, idx) => {
                 const on = playing && currentlyPlayingIndex === idx;
-                h += `<div class="song-card"><div class="song-emoji">${song.emoji}</div><div class="song-details"><div class="song-title">${song.title}${on ? ' ▶️' : ''}</div><div class="song-artist">${song.artist}</div>${failed[idx] ? '<div class="song-artist" style="color:#c2185b">⚠️ couldn’t load this song</div>' : ''}</div><div class="play-btn" data-play="${idx}">${on ? '⏸ Pause' : '🎵 Play'}</div></div>`;
+                h += `<div class="song-card${animateSongs ? ' song-in' : ''}" style="--i:${idx}"><div class="song-emoji">${song.emoji}</div><div class="song-details"><div class="song-title">${song.title}${on ? ' ▶️' : ''}</div><div class="song-artist">${song.artist}</div>${failed[idx] ? '<div class="song-artist" style="color:#c2185b">⚠️ couldn’t load this song</div>' : ''}</div><div class="play-btn" data-play="${idx}">${on ? '⏸ Pause' : '🎵 Play'}</div></div>`;
             });
             h += `</div><p style="font-size:0.7rem; text-align:center; margin-top:22px;">💖</p></div>`;
             container.innerHTML = h;
@@ -1065,10 +1048,9 @@
             document.getElementById(pageId).classList.remove("hidden");
             
             if (pageId === 'musicPage') {
+                animateSongs = true;
                 renderMusicPageContent();
-                const list = document.getElementById("musicPageContent");
-                list.classList.add("songs-in");
-                setTimeout(() => list.classList.remove("songs-in"), 900);
+                animateSongs = false;
             }
             if (pageId === 'messagePage') revealLetter();
         }
